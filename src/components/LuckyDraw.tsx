@@ -3,18 +3,23 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import participantsData from "./Data";
 
 interface Participant {
-  slNo: string;
+  slNo: number;
   name: string;
   accountNo: string;
-  token: string;
+  token: number;
 }
 
 export default function LuckyDraw() {
   const [winner, setWinner] = useState<Participant | null>(null);
   const [winners, setWinners] = useState<Participant[]>([]);
+  const [participants, setParticipants] = useState<Participant[]>([]);
 
-  const [participants, setParticipants] =
-    useState<Participant[]>(participantsData);
+  useEffect(() => {
+    fetch("/data.json")
+      .then((response) => response.json())
+      .then((jsonData) => setParticipants(jsonData))
+      .catch((error) => console.error("Error loading JSON:", error));
+  }, []);
 
   const drawWinner = () => {
     const randomIndex = Math.floor(Math.random() * participants.length);
@@ -24,12 +29,19 @@ export default function LuckyDraw() {
     const winnersArray = winners;
     winnersArray.push(participants[randomIndex]);
     setWinners(winnersArray);
+
+    // TODO: Ensure winner is removed from the participants list
     setParticipants(
-      participants.filter((participant) => participant.slNo !== winner?.slNo)
+      participants.filter(
+        (participant) => participant.token !== participants[randomIndex].token
+      )
     );
     console.log(participants);
   };
 
+  // TODO: Cosmetic - Have a Spin Wheel or a Ticker/Counter
+  // TODO: for 1-3, display bumper prize
+  // TODO: Hide/Show Bumper Prize Winners
   return (
     <div className="container text-center mt-1">
       <h1 className="font-bold">Lucky Draw - Fixed Deposit</h1>
@@ -38,13 +50,17 @@ export default function LuckyDraw() {
       </button>
       <div className="row ">
         {winners.map((winner, index) => (
-          <div key={winner.token} className="col-md-3 mb-3">
+          <div key={winner.token} className="col-md-4 mb-3">
             <div className="card mt-2" style={{ width: "18rem" }}>
               <div className="card-body">
                 <h2 className="card-title">{index + 1}</h2>
-                <p className="card-text">Name: {winner.name}</p>
+                <p className="card-text text-danger font-bold">
+                  Name: {winner.name}
+                </p>
                 <p className="card-text">Account No: {winner.accountNo}</p>
-                <p className="card-text">Winning Token: {winner.token}</p>
+                <p className="card-text text-danger font-bold">
+                  Winning Token: {winner.token}
+                </p>
               </div>
             </div>
           </div>

@@ -1,31 +1,33 @@
 import "./App.css";
+import CSVToJson from "./components/CSVToJson";
 import LuckyDraw from "./components/LuckyDraw";
 
 function App() {
   return (
-  <>
+    <>
       <header>
         <div className="logo-container">
-            <img src="./taqwa.jpg" alt="Taqwa Bank" className="logo" />
-            <div className="title">
+          <img src="./taqwa.jpg" alt="Taqwa Bank" className="logo" />
+          <div className="title">
             <h1>🎉 Lucky Draw App 🎉</h1>
-            </div>
+          </div>
         </div>
-    </header>
+      </header>
 
-
-    <main>
+      <main>
         <div className="container">
-        <LuckyDraw/>
+          <LuckyDraw />
         </div>
-    </main>
+      </main>
 
-    <footer>
+      {/* <section>
+        <CSVToJson />
+      </section> */}
+
+      <footer>
         <p>&copy; 2025 Taqwa Bank. All rights reserved.</p>
-    </footer>
-
-
-  </>
+      </footer>
+    </>
   );
 }
 
