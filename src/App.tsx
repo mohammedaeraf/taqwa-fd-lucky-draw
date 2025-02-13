@@ -9,7 +9,7 @@ function App() {
         <div className="logo-container">
           <img src="./taqwa.jpg" alt="Taqwa Bank" className="logo" />
           <div className="title">
-            <h1>🎉 Lucky Draw App 🎉</h1>
+            <h1>🎉 Lucky Draw - Ghina Fixed Deposit 2024 🎉</h1>
           </div>
         </div>
       </header>

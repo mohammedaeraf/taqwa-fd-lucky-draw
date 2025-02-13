@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-import participantsData from "./Data";
-
 interface Participant {
   slNo: number;
   name: string;
@@ -14,6 +12,7 @@ export default function LuckyDraw() {
   const [winners, setWinners] = useState<Participant[]>([]);
   const [bumperWinners, setBumperWinners] = useState<Participant[]>([]);
   const [participants, setParticipants] = useState<Participant[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     fetch("/data.json")
@@ -37,38 +36,69 @@ export default function LuckyDraw() {
       setWinners(winnersArray);
     }
 
-    // TODO: Ensure winner is removed from the participants list
     setParticipants(
       participants.filter(
         (participant) => participant.token !== participants[randomIndex].token
       )
     );
+
+    setShowModal(true);
     console.log(participants);
   };
 
   // TODO: Cosmetic - Have a Spin Wheel or a Ticker/Counter
-  // TODO: for 1-3, display bumper prize
-  // TODO: Hide/Show Bumper Prize Winners
+  // TODO: Hide/Show Bumper Prize Winners individually
+  // TODO: Show winners in a modal
   return (
     <div className="container text-center mt-1">
-      <h1 className="font-bold">Lucky Draw - Ghina Fixed Deposit 2024</h1>
-      <button onClick={drawWinner} className="btn btn-primary my-4">
+      <button onClick={drawWinner} className="btn btn-primary btn-lg my-4">
         Draw Winner
       </button>
-      <div className="row">
-        <button
-          className="btn btn-primary"
-          data-bs-toggle="collapse"
-          data-bs-target="#toggleDiv"
-        >
-          Bumper Prize Winners
-        </button>
+      {/* Bootstrap Modal for Winner */}
+      <div
+        className={`modal fade ${showModal ? "show d-block" : "d-none"}`}
+        tabIndex="-1"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">🎉 Lucky Winner 🎉</h5>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => setShowModal(false)}
+              ></button>
+            </div>
+            <div className="modal-body">
+              <h2 className="text-center">Token: {winner?.token || "???"}</h2>
+            </div>
+            <div className="modal-footer">
+              <button
+                className="btn btn-secondary"
+                onClick={() => setShowModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div id="toggleDiv" className="row collapse mt-3">
+      <div className="row mt-3">
         {bumperWinners.map((winner, index) => (
           <div key={winner.token} className="col-md-4 mb-3">
-            <div className="card mt-2" style={{ width: "18rem" }}>
+            <button
+              className="btn btn-primary"
+              data-bs-toggle="collapse"
+              data-bs-target={`#toggleDiv${index}`}
+            >
+              Show Bumper Prize {index + 1}
+            </button>
+            <div
+              className="card mt-2 collapse"
+              id={`toggleDiv${index}`}
+              style={{ width: "18rem" }}
+            >
               <div className="card-body">
                 <h2 className="card-title">
                   {index <= 2 ? "Bumper Prize" : ""} {index + 1}
@@ -107,20 +137,3 @@ export default function LuckyDraw() {
     </div>
   );
 }
-
-// const loadData = async () => {
-//   const filePath = 'data.csv'; // Path to your CSV file
-
-//   try {
-//     // Convert CSV to array of objects
-//     const data = await convertCsvToArray(filePath);
-//     setParticipants(data);
-//     console.log('CSV data as array of objects:', data);
-//   } catch (err) {
-//     console.error(err);
-//   }
-// }
-
-// useEffect(()=> {
-//   loadData();
-// },[])
