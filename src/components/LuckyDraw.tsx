@@ -116,23 +116,27 @@ export default function LuckyDraw() {
         ))}
       </div>
 
-      <div className="row ">
-        {winners.map((winner, index) => (
-          <div key={winner.token} className="col-md-4 mb-3">
-            <div className="card mt-2" style={{ width: "18rem" }}>
-              <div className="card-body">
-                <h2 className="card-title"> {index + 4}</h2>
-                <p className="card-text text-danger font-bold">
-                  Name: {winner.name}
-                </p>
-                <p className="card-text">Account No: {winner.accountNo}</p>
-                <p className="card-text text-danger font-bold">
-                  Winning Token: {winner.token}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="row">
+        <table className="table table-striped table-hover">
+          <thead className="table-primary">
+            <tr>
+              <th scope="col">Prize#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Ghina Acc/No</th>
+              <th scope="col">Token</th>
+            </tr>
+          </thead>
+          <tbody>
+            {winners.map((winner, index) => (
+              <tr key={winner.token}>
+                <td>{index + 4}</td>
+                <td>{winner.name}</td>
+                <td>{winner.accountNo}</td>
+                <td>{winner.token}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
