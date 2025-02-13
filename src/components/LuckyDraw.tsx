@@ -61,7 +61,7 @@ export default function LuckyDraw() {
           data-bs-toggle="collapse"
           data-bs-target="#toggleDiv"
         >
-          Display Bumper Prize Winnders
+          Display Bumper Prize Winners
         </button>
       </div>
 
@@ -85,6 +85,7 @@ export default function LuckyDraw() {
           </div>
         ))}
       </div>
+
       <div className="row ">
         {winners.map((winner, index) => (
           <div key={winner.token} className="col-md-4 mb-3">
