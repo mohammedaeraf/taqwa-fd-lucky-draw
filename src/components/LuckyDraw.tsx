@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./LuckyDraw.css";
 
 interface Participant {
   slNo: number;
@@ -59,8 +60,8 @@ export default function LuckyDraw() {
         className={`modal fade ${showModal ? "show d-block" : "d-none"}`}
         tabIndex="-1"
       >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
+        <div className="modal-dialog modal-dialog-centered modal-lg modal-custom">
+          <div className="modal-content fs-1">
             <div className="modal-header">
               <h5 className="modal-title">🎉 Lucky Winner 🎉</h5>
               <button
@@ -69,8 +70,17 @@ export default function LuckyDraw() {
                 onClick={() => setShowModal(false)}
               ></button>
             </div>
-            <div className="modal-body">
-              <h2 className="text-center">Token: {winner?.token || "???"}</h2>
+            <div className="modal-body vh-200">
+              <h2 className="text-center fs-1 my-5">
+                Token:&nbsp;
+                <span className="text-danger fs-1">
+                  {winner?.token || "???"}
+                </span>
+              </h2>
+              <h2 className="text-center fs-1">
+                Name:&nbsp;
+                <span className="text-info">{winner?.name || "???"}</span>
+              </h2>
             </div>
             <div className="modal-footer">
               <button
@@ -117,7 +127,7 @@ export default function LuckyDraw() {
       </div>
 
       <div className="row">
-        <table className="table table-striped table-hover">
+        <table className="table table-striped table-hover fs-3">
           <thead className="table-primary">
             <tr>
               <th scope="col">Prize#</th>
