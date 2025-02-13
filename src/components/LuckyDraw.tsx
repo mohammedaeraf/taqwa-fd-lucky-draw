@@ -61,7 +61,7 @@ export default function LuckyDraw() {
           data-bs-toggle="collapse"
           data-bs-target="#toggleDiv"
         >
-          Display Bumper Prize Winners
+          Bumper Prize Winners
         </button>
       </div>
 
