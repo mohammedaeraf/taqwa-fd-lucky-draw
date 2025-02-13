@@ -158,8 +158,8 @@ export default function LuckyDraw() {
             <tr>
               <th scope="col">Prize#</th>
               <th scope="col">Name</th>
-              <th scope="col">Ghina Acc/No</th>
-              <th scope="col">Token</th>
+              <th scope="col">Ghina A/c No</th>
+              <th scope="col">Token No</th>
             </tr>
           </thead>
           <tbody>
