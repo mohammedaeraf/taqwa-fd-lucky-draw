@@ -51,7 +51,7 @@ export default function LuckyDraw() {
   // TODO: Hide/Show Bumper Prize Winners
   return (
     <div className="container text-center mt-1">
-      <h1 className="font-bold">Lucky Draw - Fixed Deposit</h1>
+      <h1 className="font-bold">Lucky Draw - Ghina Fixed Deposit 2024</h1>
       <button onClick={drawWinner} className="btn btn-primary my-4">
         Draw Winner
       </button>
