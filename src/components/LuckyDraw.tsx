@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+
 import participantsData from "./Data";
 
 interface Participant {
@@ -12,6 +12,7 @@ interface Participant {
 export default function LuckyDraw() {
   const [winner, setWinner] = useState<Participant | null>(null);
   const [winners, setWinners] = useState<Participant[]>([]);
+  const [bumperWinners, setBumperWinners] = useState<Participant[]>([]);
   const [participants, setParticipants] = useState<Participant[]>([]);
 
   useEffect(() => {
@@ -26,9 +27,15 @@ export default function LuckyDraw() {
     setWinner(participants[randomIndex]);
     console.log(participants[randomIndex].slNo);
 
-    const winnersArray = winners;
-    winnersArray.push(participants[randomIndex]);
-    setWinners(winnersArray);
+    if (bumperWinners.length < 3) {
+      const bumpersArray = bumperWinners;
+      bumpersArray.push(participants[randomIndex]);
+      setBumperWinners(bumpersArray);
+    } else {
+      const winnersArray = winners;
+      winnersArray.push(participants[randomIndex]);
+      setWinners(winnersArray);
+    }
 
     // TODO: Ensure winner is removed from the participants list
     setParticipants(
@@ -48,12 +55,42 @@ export default function LuckyDraw() {
       <button onClick={drawWinner} className="btn btn-primary my-4">
         Draw Winner
       </button>
+      <div className="row">
+        <button
+          className="btn btn-primary"
+          data-bs-toggle="collapse"
+          data-bs-target="#toggleDiv"
+        >
+          Display Bumper Prize Winnders
+        </button>
+      </div>
+
+      <div id="toggleDiv" className="row collapse mt-3">
+        {bumperWinners.map((winner, index) => (
+          <div key={winner.token} className="col-md-4 mb-3">
+            <div className="card mt-2" style={{ width: "18rem" }}>
+              <div className="card-body">
+                <h2 className="card-title">
+                  {index <= 2 ? "Bumper Prize" : ""} {index + 1}
+                </h2>
+                <p className="card-text text-danger font-bold">
+                  Name: {winner.name}
+                </p>
+                <p className="card-text">Account No: {winner.accountNo}</p>
+                <p className="card-text text-danger font-bold">
+                  Winning Token: {winner.token}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
       <div className="row ">
         {winners.map((winner, index) => (
           <div key={winner.token} className="col-md-4 mb-3">
             <div className="card mt-2" style={{ width: "18rem" }}>
               <div className="card-body">
-                <h2 className="card-title">{index + 1}</h2>
+                <h2 className="card-title"> {index + 4}</h2>
                 <p className="card-text text-danger font-bold">
                   Name: {winner.name}
                 </p>
