@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./LuckyDraw.css";
 
 interface Participant {
   slNo: number;
@@ -8,12 +7,21 @@ interface Participant {
   token: number;
 }
 
+// TODO: Cosmetic - Have a Spin Wheel or a Ticker/Counter
+// TODO: Show bumper winners in modal (too complicated to implement)
+
 export default function LuckyDraw() {
+  const [participants, setParticipants] = useState<Participant[]>([]);
+  let [drawCount, setDrawCount] = useState<number>(0);
+
   const [winner, setWinner] = useState<Participant | null>(null);
+  // const [bumperWinner1, setBumperWinner1] = useState<Participant | null>(null);
+  // const [bumperWinner2, setBumperWinner2] = useState<Participant | null>(null);
+  // const [bumperWinner3, setBumperWinner3] = useState<Participant | null>(null);
+
   const [winners, setWinners] = useState<Participant[]>([]);
   const [bumperWinners, setBumperWinners] = useState<Participant[]>([]);
-  const [participants, setParticipants] = useState<Participant[]>([]);
-  const [showModal, setShowModal] = useState(false);
+  let [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     fetch("/data.json")
@@ -23,14 +31,20 @@ export default function LuckyDraw() {
   }, []);
 
   const drawWinner = () => {
+    if (drawCount >= 20) return;
     const randomIndex = Math.floor(Math.random() * participants.length);
     setWinner(participants[randomIndex]);
-    console.log(participants[randomIndex].slNo);
+    setDrawCount(++drawCount);
 
     if (bumperWinners.length < 3) {
       const bumpersArray = bumperWinners;
       bumpersArray.push(participants[randomIndex]);
       setBumperWinners(bumpersArray);
+      // drawCount == 0
+      //   ? setBumperWinner1(participants[randomIndex])
+      //   : drawCount == 1
+      //   ? setBumperWinner2(participants[randomIndex])
+      //   : setBumperWinner3(participants[randomIndex]);
     } else {
       const winnersArray = winners;
       winnersArray.push(participants[randomIndex]);
@@ -47,12 +61,22 @@ export default function LuckyDraw() {
     console.log(participants);
   };
 
-  // TODO: Cosmetic - Have a Spin Wheel or a Ticker/Counter
-  // TODO: Hide/Show Bumper Prize Winners individually
-  // TODO: Show winners in a modal
   return (
     <div className="container text-center mt-1">
-      <button onClick={drawWinner} className="btn btn-primary btn-lg my-4">
+      {/* Marquee Section */}
+      <div className="marquee-container">
+        <div className="marquee">
+          {[...participants].map((participant, index) => (
+            <span key={index} className="marquee-item">
+              {participant.token}
+            </span>
+          ))}
+        </div>
+      </div>
+      <button
+        onClick={drawWinner}
+        className="btn btn-danger my-4 btn-lg fs-2 p-4"
+      >
         Draw Winner
       </button>
       {/* Bootstrap Modal for Winner */}
@@ -93,6 +117,8 @@ export default function LuckyDraw() {
           </div>
         </div>
       </div>
+
+      {/* Bumper Prize Winners */}
 
       <div className="row mt-3">
         {bumperWinners.map((winner, index) => (
