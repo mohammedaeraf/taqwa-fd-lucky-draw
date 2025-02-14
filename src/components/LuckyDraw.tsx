@@ -18,7 +18,7 @@ export default function LuckyDraw() {
   // const [bumperWinner1, setBumperWinner1] = useState<Participant | null>(null);
   // const [bumperWinner2, setBumperWinner2] = useState<Participant | null>(null);
   // const [bumperWinner3, setBumperWinner3] = useState<Participant | null>(null);
-
+  const [loading, setLoading] = useState(false);
   const [winners, setWinners] = useState<Participant[]>([]);
   const [bumperWinners, setBumperWinners] = useState<Participant[]>([]);
   let [showModal, setShowModal] = useState(false);
@@ -32,32 +32,33 @@ export default function LuckyDraw() {
 
   const drawWinner = () => {
     if (drawCount >= 20) return;
-    const randomIndex = Math.floor(Math.random() * participants.length);
-    setWinner(participants[randomIndex]);
-    setDrawCount(++drawCount);
+    setLoading(true); // Show spinner
 
-    if (bumperWinners.length < 3) {
-      const bumpersArray = bumperWinners;
-      bumpersArray.push(participants[randomIndex]);
-      setBumperWinners(bumpersArray);
-      // drawCount == 0
-      //   ? setBumperWinner1(participants[randomIndex])
-      //   : drawCount == 1
-      //   ? setBumperWinner2(participants[randomIndex])
-      //   : setBumperWinner3(participants[randomIndex]);
-    } else {
-      const winnersArray = winners;
-      winnersArray.push(participants[randomIndex]);
-      setWinners(winnersArray);
-    }
+    setTimeout(() => {
+      const randomIndex = Math.floor(Math.random() * participants.length);
+      setWinner(participants[randomIndex]);
+      setDrawCount(++drawCount);
 
-    setParticipants(
-      participants.filter(
-        (participant) => participant.token !== participants[randomIndex].token
-      )
-    );
+      if (bumperWinners.length < 3) {
+        const bumpersArray = bumperWinners;
+        bumpersArray.push(participants[randomIndex]);
+        setBumperWinners(bumpersArray);
+      } else {
+        const winnersArray = winners;
+        winnersArray.push(participants[randomIndex]);
+        setWinners(winnersArray);
+      }
 
-    setShowModal(true);
+      setParticipants(
+        participants.filter(
+          (participant) => participant.token !== participants[randomIndex].token
+        )
+      );
+
+      setShowModal(true);
+      setLoading(false); // Hide spinner
+    }, 8000); // Simulate suspense (3 seconds)
+
     console.log(participants);
   };
 
@@ -79,6 +80,18 @@ export default function LuckyDraw() {
       >
         Draw Winner
       </button>
+
+      {/* Display Spinner while loading */}
+
+      {loading && (
+        <div className="row d-flex justify-content-center">
+          <div className="text-center mt-3" role="status">
+            {/* <span className="visually-hidden">Loading...</span> */}
+            <img src="/spin-wheel.webp" alt="Spin Wheel" />
+          </div>
+        </div>
+      )}
+
       {/* Bootstrap Modal for Winner */}
       <div
         className={`modal fade ${showModal ? "show d-block" : "d-none"}`}
