@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+// Defines the structure of a participant in the lucky draw
 interface Participant {
   slNo: number;
   name: string;
@@ -7,22 +8,24 @@ interface Participant {
   token: number;
 }
 
-// TODO: Cosmetic - Have a Spin Wheel or a Ticker/Counter
-// TODO: Show bumper winners in modal (too complicated to implement)
-
 export default function LuckyDraw() {
+  // Store all participants loaded from the data.json file
   const [participants, setParticipants] = useState<Participant[]>([]);
+  // Track the number of draws performed (limited to 20 total)
   let [drawCount, setDrawCount] = useState<number>(0);
 
+  // Store the current winner being displayed
   const [winner, setWinner] = useState<Participant | null>(null);
-  // const [bumperWinner1, setBumperWinner1] = useState<Participant | null>(null);
-  // const [bumperWinner2, setBumperWinner2] = useState<Participant | null>(null);
-  // const [bumperWinner3, setBumperWinner3] = useState<Participant | null>(null);
+  // Loading state to show spinner during the draw animation
   const [loading, setLoading] = useState(false);
+  // Store main prize winners (prizes 4-20)
   const [winners, setWinners] = useState<Participant[]>([]);
+  // Store bumper prize winners (first 3 prizes)
   const [bumperWinners, setBumperWinners] = useState<Participant[]>([]);
+  // Control visibility of the winner announcement modal
   let [showModal, setShowModal] = useState(false);
 
+  // Load participant data from JSON file on component mount
   useEffect(() => {
     fetch("/data.json")
       .then((response) => response.json())
@@ -30,15 +33,20 @@ export default function LuckyDraw() {
       .catch((error) => console.error("Error loading JSON:", error));
   }, []);
 
+  // Main draw function that selects a random winner
   const drawWinner = () => {
+    // Prevent drawing after reaching the limit of 20 winners
     if (drawCount >= 20) return;
     setLoading(true); // Show spinner
 
+    // Add delay to simulate the spinning wheel animation
     setTimeout(() => {
+      // Select a random participant from the remaining pool
       const randomIndex = Math.floor(Math.random() * participants.length);
       setWinner(participants[randomIndex]);
       setDrawCount(++drawCount);
 
+      // First 3 winners go to bumper prizes, rest go to main winners
       if (bumperWinners.length < 3) {
         const bumpersArray = bumperWinners;
         bumpersArray.push(participants[randomIndex]);
@@ -49,22 +57,24 @@ export default function LuckyDraw() {
         setWinners(winnersArray);
       }
 
+      // Remove the selected participant from the pool to prevent duplicate wins
       setParticipants(
         participants.filter(
-          (participant) => participant.token !== participants[randomIndex].token
-        )
+          (participant) =>
+            participant.token !== participants[randomIndex].token,
+        ),
       );
 
       setShowModal(true);
       setLoading(false); // Hide spinner
-    }, 8000); // Simulate suspense (3 seconds)
+    }, 2000); // Simulate suspense (2 seconds)
 
     console.log(participants);
   };
 
   return (
     <div className="container text-center mt-1">
-      {/* Marquee Section */}
+      {/* Animated marquee displaying all remaining participant tokens */}
       <div className="marquee-container">
         <div className="marquee">
           {[...participants].map((participant, index) => (
@@ -74,6 +84,8 @@ export default function LuckyDraw() {
           ))}
         </div>
       </div>
+
+      {/* Primary action button to draw a winner */}
       <button
         onClick={drawWinner}
         className="btn btn-danger my-4 btn-lg fs-2 p-4"
@@ -81,18 +93,16 @@ export default function LuckyDraw() {
         Draw Winner
       </button>
 
-      {/* Display Spinner while loading */}
-
+      {/* Loading spinner that displays during the draw animation */}
       {loading && (
         <div className="row d-flex justify-content-center">
           <div className="text-center mt-3" role="status">
-            {/* <span className="visually-hidden">Loading...</span> */}
             <img src="/spin-wheel.webp" alt="Spin Wheel" />
           </div>
         </div>
       )}
 
-      {/* Bootstrap Modal for Winner */}
+      {/* Modal popup that announces the current winner */}
       <div
         className={`modal fade ${showModal ? "show d-block" : "d-none"}`}
         tabIndex="-1"
@@ -131,8 +141,7 @@ export default function LuckyDraw() {
         </div>
       </div>
 
-      {/* Bumper Prize Winners */}
-
+      {/* Section displaying the first 3 bumper prize winners in collapsible cards */}
       <div className="row mt-3">
         {bumperWinners.map((winner, index) => (
           <div key={winner.token} className="col-md-4 mb-3">
@@ -165,6 +174,7 @@ export default function LuckyDraw() {
         ))}
       </div>
 
+      {/* Table showing all main prize winners (prizes 4-20) */}
       <div className="row">
         <table className="table table-striped table-hover fs-3">
           <thead className="table-primary">
